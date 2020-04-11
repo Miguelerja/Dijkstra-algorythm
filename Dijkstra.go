@@ -5,8 +5,39 @@ import (
 	"math"
 )
 
-func main() {
+func getKeys(hash map[string]int) []string {
+	keys := make([]string, len(hash))
+	i := 0
+	for key := range hash {
+		keys[1] = key
+		i++
+	}
+
+	return keys
+}
+
+func dijkstra(graph map[string]map[string]int, startingNode string, endNode string) {
 	infinite := math.Inf(1)
+	costs := map[string]int{}
+	parents := map[string]string{}
+	var tracked []string
+
+	for key, value := range graph[startingNode] {
+		costs[key] = value
+		parents[key] = startingNode
+	}
+	costs["End"] = int(infinite)
+	parents["End"] = ""
+
+	tracked = append(tracked, startingNode)
+
+	fmt.Print(graph, "\n")
+	fmt.Print(costs, "\n")
+	fmt.Print(parents, "\n")
+	fmt.Print(tracked, "\n")
+}
+
+func main() {
 	graph := map[string]map[string]int{
 		"Start": map[string]int{
 			"A": 5,
@@ -30,20 +61,17 @@ func main() {
 		"End": map[string]int{},
 	}
 
-	costs := map[string]float64{
-		"A":   5,
-		"B":   2,
-		"End": infinite,
-	}
+	// costs := map[string]float64{
+	// 	"A":   5,
+	// 	"B":   2,
+	// 	"End": infinite,
+	// }
 
-	parents := map[string]string{
-		"A":   "start",
-		"B":   "start",
-		"End": "",
-	}
+	// parents := map[string]string{
+	// 	"A":   "start",
+	// 	"B":   "start",
+	// 	"End": "",
+	// }
 
-	fmt.Print(infinite, "\n")
-	fmt.Print(graph, "\n")
-	fmt.Print(costs, "\n")
-	fmt.Print(parents, "\n")
+	dijkstra(graph, "Start", "End")
 }
