@@ -16,6 +16,16 @@ func getKeys(hash map[string]int) []string {
 	return keys
 }
 
+func indexOf(arr []string, item string) int {
+	for index, value := range arr {
+		if value == item {
+			return index
+		}
+	}
+
+	return -1
+}
+
 func dijkstra(graph map[string]map[string]int, startingNode string, endNode string) {
 	infinite := math.Inf(1)
 	costs := map[string]int{}
@@ -35,6 +45,9 @@ func dijkstra(graph map[string]map[string]int, startingNode string, endNode stri
 	fmt.Print(costs, "\n")
 	fmt.Print(parents, "\n")
 	fmt.Print(tracked, "\n")
+
+	fmt.Print(indexOf(tracked, startingNode), "\n")
+	fmt.Print(indexOf(tracked, endNode), "\n")
 }
 
 func main() {
@@ -60,18 +73,6 @@ func main() {
 		},
 		"End": map[string]int{},
 	}
-
-	// costs := map[string]float64{
-	// 	"A":   5,
-	// 	"B":   2,
-	// 	"End": infinite,
-	// }
-
-	// parents := map[string]string{
-	// 	"A":   "start",
-	// 	"B":   "start",
-	// 	"End": "",
-	// }
 
 	dijkstra(graph, "Start", "End")
 }
