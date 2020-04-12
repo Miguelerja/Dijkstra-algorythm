@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -39,17 +38,22 @@ func findCheapestNode(hash map[string]float64, track []string) string {
 	return lowestNode
 }
 
-func dijkstra(graph map[string]map[string]float64, startingNode string, endNode string) {
+func setInitialCostsParents(hash map[string]float64, startingNode string, endNode string) (map[string]float64, map[string]string) {
 	costs := map[string]float64{}
 	parents := map[string]string{}
-	var tracked []string
-
-	for key, value := range graph[startingNode] {
+	for key, value := range hash {
 		costs[key] = value
 		parents[key] = startingNode
 	}
-	costs["End"] = math.Inf(0)
-	parents["End"] = ""
+	costs[endNode] = math.Inf(0)
+	parents[endNode] = ""
+
+	return costs, parents
+}
+
+func dijkstra(graph map[string]map[string]float64, startingNode string, endNode string) {
+	costs, parents := setInitialCostsParents(graph[startingNode], startingNode, endNode)
+	tracked := make([]string, 0, len(graph))
 
 	tracked = append(tracked, startingNode)
 	activeNode := findCheapestNode(costs, tracked)
@@ -61,16 +65,15 @@ func dijkstra(graph map[string]map[string]float64, startingNode string, endNode 
 		for key, neighborCost := range neighbors {
 			newCost := activeNodeCost + neighborCost
 			if costs[key] == 0 {
-				costs[key] = neighborCost
+				costs[key] = math.Inf(0)
 			}
-			costs[key] = newCost
-			parents[key] = activeNode
+			if newCost < costs[key] {
+				costs[key] = newCost
+				parents[key] = activeNode
+			}
 		}
 		tracked = append(tracked, activeNode)
 		activeNode = findCheapestNode(costs, tracked)
-		fmt.Println("costs", costs)
-		fmt.Println("parents", parents)
-		fmt.Println("active node inside while", activeNode)
 	}
 }
 
