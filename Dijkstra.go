@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -21,6 +22,14 @@ func indexOf(arr []string, item string) int {
 	}
 
 	return -1
+}
+
+func reverseArr(arr []string) []string {
+	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+
+	return arr
 }
 
 func findCheapestNode(hash map[string]float64, track []string) string {
@@ -51,10 +60,22 @@ func setInitialCostsParents(hash map[string]float64, startingNode string, endNod
 	return costs, parents
 }
 
-func dijkstra(graph map[string]map[string]float64, startingNode string, endNode string) {
+func buildFinalRoute(hash map[string]string, startingNode string, activeNode string) []string {
+	route := make([]string, 0, len(hash))
+
+	for activeNode != startingNode {
+		route = append(route, activeNode)
+		activeNode = hash[activeNode]
+	}
+	route = append(route, startingNode)
+	route = reverseArr(route)
+
+	return route
+}
+
+func dijkstra(graph map[string]map[string]float64, startingNode string, endNode string) []string {
 	costs, parents := setInitialCostsParents(graph[startingNode], startingNode, endNode)
 	tracked := make([]string, 0, len(graph))
-
 	tracked = append(tracked, startingNode)
 	activeNode := findCheapestNode(costs, tracked)
 
@@ -75,6 +96,10 @@ func dijkstra(graph map[string]map[string]float64, startingNode string, endNode 
 		tracked = append(tracked, activeNode)
 		activeNode = findCheapestNode(costs, tracked)
 	}
+
+	route := buildFinalRoute(parents, startingNode, activeNode)
+
+	return route
 }
 
 func main() {
@@ -85,14 +110,14 @@ func main() {
 		},
 		"A": map[string]float64{
 			"C": 4,
-			"D": 2,
+			"D": 20,
 		},
 		"B": map[string]float64{
-			"A": 8,
+			"A": 1,
 			"D": 7,
 		},
 		"C": map[string]float64{
-			"D":   6,
+			"D":   10,
 			"End": 3,
 		},
 		"D": map[string]float64{
@@ -101,5 +126,7 @@ func main() {
 		"End": map[string]float64{},
 	}
 
-	dijkstra(graph, "Start", "End")
+	route := dijkstra(graph, "Start", "End")
+
+	fmt.Print(route)
 }
